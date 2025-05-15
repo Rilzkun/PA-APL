@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 #include <iostream>
 #include <fstream>
 #include <sstream>
+=======
+#include <iostream>    
+// assalamualaikum
+>>>>>>> cb054f2ed855421905c4a6ca91be0fefae983dc9
 #include <string>
 using namespace std;
 
