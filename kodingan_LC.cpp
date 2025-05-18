@@ -12,10 +12,21 @@ struct Akun {
     string role; // admin, akuntan, manajer
 };
 
+struct Transaksi {
+    string deskripsi;
+    string jenis;
+    int id;
+    int jumlah;
+};
+
 // === GLOBALS === //
 const int MAKS_AKUN = 100;
 Akun daftarAkun[MAKS_AKUN];
 int totalAkun = 0;
+
+const int MAKS_TRANSAKSI = 100;
+Transaksi daftartransaksi[MAKS_TRANSAKSI];
+int totaltransaksi = 0;
 
 string currentUserEmail;
 string currentUserRole;
@@ -32,6 +43,11 @@ void menuManajer();
 bool tambahAkun(Akun akunBaru);
 void lihatDaftarAkun();
 bool hapusAkun(const string& emailTarget);
+
+void catatpemasukan();
+void ajukanPengeluaran();
+void lihatDaftarTransaksi();
+void tampilkanRingkasanKeuangan();
 
 // === MAIN FUNCTION === //
 int main() {
@@ -250,7 +266,67 @@ bool hapusAkun(const string& emailTarget) {
 
 // === MENU AKUNTAN & MANAJER (placeholder) === //
 void menuAkuntan() {
-    cout << "\n[AKUNTAN MODE] - Menu masih kosong.\n";
+    int pilihan;
+     
+    do{
+        cout<<endl<<"----menu akuntan----"<<endl;
+        cout<<"1. Catat Pemasukan"<<endl;
+        cout<<"2. Ajukan Pengeluaran"<<endl;
+        cout<<"3. Lihat  Daftar Transaksi"<<endl;
+        cout<<"4. Laporan Ringkasan Keuangan"<<endl;
+        cout<<"5. Kembali Ke Menu Utama"<<endl;
+        cout<<"Masukkan pilihanmu; ";
+        cin>>pilihan;
+        switch (pilihan)
+        {
+            case 1:
+                catatpemasukan();
+                break;
+            
+            case 2:
+                ajukanPengeluaran();
+                break;
+
+            case 3:
+                lihatDaftarTransaksi();
+                break;
+
+            case 4:
+                tampilkanRingkasanKeuangan();
+                break;
+
+            case 5:
+                cout<<"balik ke menu utama"<<endl;
+                break;
+            default:
+                cout<<"pilihan tidak valid"<<endl;
+                    
+                break;
+        }
+
+
+    }while (pilihan !=5);
+    
+}
+
+
+
+void catatpemasukan() {
+    cout << "belum\n";
+}
+
+void ajukanPengeluaran() {
+    cout << "belum\n";
+}
+
+void lihatDaftarTransaksi() {
+    cout << "belum\n";
+}
+
+void tampilkanRingkasanKeuangan() {
+    cout << "belum\n";
+
+
 }
 
 void menuManajer() {
