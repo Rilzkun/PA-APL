@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>   
 #include <string>
+#include <vector>
 using namespace std;
 
 // === STRUCT SECTION === //
@@ -48,13 +49,21 @@ void catatpemasukan();
 void ajukanPengeluaran();
 void lihatDaftarTransaksi();
 void tampilkanRingkasanKeuangan();
+void lihatProposal();
+bool simpanTransaksiKeCSV(const string& filename);
+bool loadTransaksiDariCSV(const string& filename);
+bool simpanProposal(const Transaksi& proposal);
+void setujuiProposal();
+void tampilkanNotifikasi(); 
 
 // === MAIN FUNCTION === //
 int main() {
     if (!loadAkunDariCSV("akun.csv")) {
         cout << "Gagal memuat data akun dari CSV.\n";
     }
-
+        if (!loadTransaksiDariCSV("transaksi.csv")) {
+        cout << "Gagal memuat data transaksi dari CSV.\n";
+    }
     while (true) {
         int pilih = menuUtama();
         if (pilih == 1) {
@@ -62,7 +71,6 @@ int main() {
             if (idxLogin != -1) {
                 currentUserEmail = daftarAkun[idxLogin].email;
                 currentUserRole = daftarAkun[idxLogin].role;
-
                 if (currentUserRole == "admin") menuAdmin();
                 else if (currentUserRole == "akuntan") menuAkuntan();
                 else if (currentUserRole == "manajer") menuManajer();
@@ -77,7 +85,6 @@ int main() {
             cout << "Pilihan tidak valid.\n";
         }
     }
-
     return 0;
 }
 
@@ -114,7 +121,6 @@ int login() {
         cout << "Login gagal!\n";
         percobaan++;
     }
-
     return -1;
 }
 
@@ -150,14 +156,142 @@ bool simpanAkunKeCSV(const string& filename) {
     file << "email,password,nama,role\n";
     for (int i = 0; i < totalAkun; i++) {
         file << daftarAkun[i].email << ","
-             << daftarAkun[i].password << ","
-             << daftarAkun[i].nama << ","
-             << daftarAkun[i].role << "\n";
+        << daftarAkun[i].password << ","
+        << daftarAkun[i].nama << ","
+        << daftarAkun[i].role << "\n";
     }
+    
+    file.close();
+    return true;
+}
+
+bool simpanTransaksiKeCSV(const string& filename) {
+    ofstream file(filename);
+    if (!file.is_open()) return false;
+
+    file << "id,deskripsi,jenis,jumlah\n";
+    for (int i = 0; i < totaltransaksi; i++) {
+        file << daftartransaksi[i].id << ","
+             << daftartransaksi[i].deskripsi << ","
+             << daftartransaksi[i].jenis << ","
+             << daftartransaksi[i].jumlah << "\n";
+    }
+    file.close();
+    return true;
+}
+
+bool loadTransaksiDariCSV(const string& filename) {
+    ifstream file(filename);
+    if (!file.is_open()) return false;
+
+    string line;
+    getline(file, line);
+
+    totaltransaksi = 0;
+    while (getline(file, line) && totaltransaksi < MAKS_TRANSAKSI) {
+        stringstream ss(line);
+        string idStr, deskripsi, jenis, jumlahStr;
+
+        getline(ss, idStr, ',');
+        getline(ss, deskripsi, ',');
+        getline(ss, jenis, ',');
+        getline(ss, jumlahStr, ',');
+
+        daftartransaksi[totaltransaksi++] = {deskripsi, jenis, stoi(idStr), stoi(jumlahStr)};
+    }
+    file.close();
+    return true;
+}
+
+bool simpanProposal(const Transaksi& proposal) {
+    bool fileBaru = false;
+    ifstream cek("proposal.csv");
+    if (!cek.good()) fileBaru = true;
+    cek.close();
+
+    ofstream file("proposal.csv", ios::app);
+    if (!file.is_open()) return false;
+
+    if (fileBaru) {
+        file << "id,deskripsi,jenis,jumlah\n";  // Tulis header jika file baru
+    }
+
+    file << proposal.id << ","
+         << proposal.deskripsi << ","
+         << proposal.jenis << ","
+         << proposal.jumlah << "\n";
 
     file.close();
     return true;
 }
+
+
+void tampilkanNotifikasi() {
+    ifstream file("notifikasi.csv");
+    if (!file.is_open()) return;
+
+    string line;
+    while (getline(file, line)) {
+        cout << "[NOTIFIKASI]: " << line << endl;
+    }
+    file.close();
+
+    ofstream clear("notifikasi.csv", ios::trunc);
+    clear.close();
+}
+
+void setujuiProposal() {
+    ifstream file("proposal.csv");
+    if (!file.is_open()) {
+        cout << "Tidak ada proposal untuk ditinjau.\n";
+        return;
+    }
+
+    string line;
+    vector<Transaksi> disetujui;
+
+    if (!getline(file, line)) {  // file kosong (tidak ada header)
+        cout << "Tidak ada proposal untuk ditinjau.\n";
+        return;
+    }
+
+    bool adaProposal = false;
+    while (getline(file, line)) {
+        adaProposal = true;
+        stringstream ss(line);
+        string idStr, deskripsi, jenis, jumlahStr;
+
+        getline(ss, idStr, ',');
+        getline(ss, deskripsi, ',');
+        getline(ss, jenis, ',');
+        getline(ss, jumlahStr, ',');
+
+        cout << "Proposal: " << deskripsi << " - Jumlah: " << jumlahStr << endl;
+        cout << "Setujui? (y/n): ";
+        char jawab;
+        cin >> jawab;
+
+        if (jawab == 'y' || jawab == 'Y') {
+            Transaksi t = {deskripsi, jenis, totaltransaksi + 1, stoi(jumlahStr)};
+            daftartransaksi[totaltransaksi++] = t;
+            disetujui.push_back(t);
+
+            ofstream notif("notifikasi.csv", ios::app);
+            notif << "Proposal \"" << deskripsi << "\" disetujui oleh manajer.\n";
+            notif.close();
+        }
+    }
+
+    if (!adaProposal) {
+        cout << "Tidak ada proposal untuk ditinjau.\n";
+    }
+
+    file.close();
+    simpanTransaksiKeCSV("transaksi.csv");
+    ofstream clearFile("proposal.csv", ios::trunc);
+    clearFile.close();
+}
+
 
 // === MENU ADMIN === //
 void menuAdmin() {
@@ -266,8 +400,7 @@ bool hapusAkun(const string& emailTarget) {
 
 // === MENU AKUNTAN & MANAJER (placeholder) === //
 void menuAkuntan() {
-    int pilihan;
-     
+    int pilihan; 
     do{
         cout<<endl<<"----menu akuntan----"<<endl;
         cout<<"1. Catat Pemasukan"<<endl;
@@ -281,54 +414,104 @@ void menuAkuntan() {
         {
             case 1:
                 catatpemasukan();
-                break;
-            
+                break;           
             case 2:
                 ajukanPengeluaran();
                 break;
-
             case 3:
                 lihatDaftarTransaksi();
                 break;
-
             case 4:
                 tampilkanRingkasanKeuangan();
                 break;
-
             case 5:
                 cout<<"balik ke menu utama"<<endl;
                 break;
             default:
                 cout<<"pilihan tidak valid"<<endl;
-                    
                 break;
         }
-
-
     }while (pilihan !=5);
     
 }
 
-
-
 void catatpemasukan() {
-    cout << "belum\n";
+    Transaksi t;
+    t.jenis = "pemasukan";
+    t.id = totaltransaksi + 1;
+    cout << "Deskripsi: ";
+    cin.ignore();
+    getline(cin, t.deskripsi);
+    cout << "Jumlah: ";
+    cin >> t.jumlah;
+
+    daftartransaksi[totaltransaksi++] = t;
+    simpanTransaksiKeCSV("transaksi.csv");
+    cout << "Pemasukan dicatat.\n";
 }
 
 void ajukanPengeluaran() {
-    cout << "belum\n";
+    Transaksi t;
+    t.jenis = "pengeluaran";
+    t.id = totaltransaksi + 1;
+    cout << "Deskripsi: ";
+    cin.ignore();
+    getline(cin, t.deskripsi);
+    cout << "Jumlah: ";
+    cin >> t.jumlah;
+
+    if (simpanProposal(t))
+        cout << "Proposal pengeluaran diajukan. Menunggu persetujuan manajer.\n";
+    else
+        cout << "Gagal menyimpan proposal.\n";
 }
 
 void lihatDaftarTransaksi() {
-    cout << "belum\n";
+    cout << "\n=== DAFTAR TRANSAKSI ===\n";
+    for (int i = 0; i < totaltransaksi; i++) {
+        cout << daftartransaksi[i].id << ". " << daftartransaksi[i].deskripsi << " | " << daftartransaksi[i].jenis << " | " << daftartransaksi[i].jumlah << endl;
+    }
 }
 
 void tampilkanRingkasanKeuangan() {
-    cout << "belum\n";
+    int totalPemasukan = 0, totalPengeluaran = 0;
+    for (int i = 0; i < totaltransaksi; i++) {
+        if (daftartransaksi[i].jenis == "pemasukan")
+            totalPemasukan += daftartransaksi[i].jumlah;
+        else if (daftartransaksi[i].jenis == "pengeluaran")
+            totalPengeluaran += daftartransaksi[i].jumlah;
+    }
+    int saldo = totalPemasukan - totalPengeluaran;
 
-
+    cout << "\n=== RINGKASAN KEUANGAN ===\n";
+    cout << "Total Pemasukan : " << totalPemasukan << endl;
+    cout << "Total Pengeluaran: " << totalPengeluaran << endl;
+    cout << "Saldo Saat Ini  : " << saldo << endl;
 }
 
 void menuManajer() {
-    cout << "\n[MANAJER MODE] - Menu masih kosong.\n";
+    int pilihan;  
+    do{
+        cout << endl <<"----Menu Manager----" << endl;
+        cout <<"1. Tampilkan Laporan Keuangan"<< endl;
+        cout <<"2. Lihat Proposal"<< endl;
+        cout << "3. Kembali Ke Menu Utama"<< endl;
+        cout<<"Masukkan Pilihan: ";
+        cin>>pilihan;
+        switch (pilihan)
+        {
+            case 1:
+                tampilkanRingkasanKeuangan();
+                break;
+            case 2:
+                setujuiProposal();
+                break;
+            case 3:
+                cout << "Kembali Ke Menu Utama" << endl;
+                break;
+            default:
+                cout<<"pilihan tidak valid"<<endl;        
+                break;
+        }
+    }while (pilihan !=3);
 }
