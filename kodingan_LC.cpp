@@ -68,7 +68,7 @@ void lihatDaftarAkun();
 bool hapusAkun(const string& emailTarget);
 
 void catatpemasukan();
-void ajukanPengeluaran();
+void ajukanProposal();
 void lihatDaftarTransaksi();
 void tampilkanRingkasanKeuangan();
 void lihatProposal();
@@ -320,7 +320,6 @@ void setujuiProposal() {
 void menuAdmin() {
     int pilihan;
     do {
-        clearscreen();
         cout << "\n=== MENU ADMIN ===\n";
         cout << "1. Tambah Akun Baru\n";
         cout << "2. Lihat Daftar Akun\n";
@@ -426,10 +425,9 @@ bool hapusAkun(const string& emailTarget) {
 void menuAkuntan() {
     int pilihan; 
     do{
-        clearscreen();
         cout<<endl<<"----menu akuntan----"<<endl;
         cout<<"1. Catat Pemasukan"<<endl;
-        cout<<"2. Ajukan Pengeluaran"<<endl;
+        cout<<"2. Ajukan Proposal Pengeluaran"<<endl;
         cout<<"3. Lihat  Daftar Transaksi"<<endl;
         cout<<"4. Laporan Ringkasan Keuangan"<<endl;
         cout<<"5. Kembali Ke Menu Utama"<<endl;
@@ -441,7 +439,7 @@ void menuAkuntan() {
                 catatpemasukan();
                 break;           
             case 2:
-                ajukanPengeluaran();
+                ajukanProposal();
                 break;
             case 3:
                 lihatDaftarTransaksi();
@@ -476,21 +474,45 @@ void catatpemasukan() {
 }
 
 
-void ajukanPengeluaran() {
-    Transaksi t;
-    t.jenis = "pengeluaran";
-    t.id = totaltransaksi + 1;
+// void ajukanPengeluaran() {
+//     Transaksi t;
+//     t.jenis = "pengeluaran";
+//     t.id = totaltransaksi + 1;
+//     cout << "Deskripsi: ";
+//     cin.ignore();
+//     getline(cin, t.deskripsi);
+//     cout << "Jumlah: ";
+//     cin >> t.jumlah;
+
+//     if (simpanProposal(t))
+//         cout << "Proposal pengeluaran diajukan. Menunggu persetujuan manajer.\n";
+//     else
+//         cout << "Gagal menyimpan proposal.\n";
+// }
+
+
+void ajukanProposal() {
+    string deskripsi;
+    int jumlah;
+
     cout << "Deskripsi: ";
     cin.ignore();
-    getline(cin, t.deskripsi);
-    cout << "Jumlah: ";
-    cin >> t.jumlah;
+    getline(cin, deskripsi);
 
-    if (simpanProposal(t))
-        cout << "Proposal pengeluaran diajukan. Menunggu persetujuan manajer.\n";
-    else
-        cout << "Gagal menyimpan proposal.\n";
+    cout << "Jumlah: ";
+    cin >> jumlah;
+
+    ofstream file("proposal.csv", ios::app);
+    if (file.is_open()) {
+        file << "Proposal," << deskripsi << "," << jumlah << "\n";
+        file.close();
+        cout << "Proposal berhasil diajukan.\n";
+    } else {
+        cout << "Gagal membuka file proposal.csv\n";
+    }
 }
+
+
 
 void lihatDaftarTransaksi() {
     cout << "\n=== DAFTAR TRANSAKSI ===\n";
@@ -518,7 +540,6 @@ void tampilkanRingkasanKeuangan() {
 void menuManajer() {
     int pilihan;  
     do{
-        clearscreen();
         cout << endl <<"----Menu Manager----" << endl;
         cout <<"1. Tampilkan Laporan Keuangan"<< endl;
         cout <<"2. Lihat Proposal"<< endl;
