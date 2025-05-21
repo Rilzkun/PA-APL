@@ -3,7 +3,29 @@
 #include <sstream>   
 #include <string>
 #include <vector>
+#include <cstdlib>
 using namespace std;
+
+#include <iostream>
+using namespace std;
+
+void tampilkanJudul() {
+    cout << R"( 
+ __          ___   ____    __    ____  _______        ______   ______   .___  ___. .______      ___      .__   __. ____    ____ 
+|  |        /   \  \   \  /  \  /   / |   ____|      /      | /  __  \  |   \/   | |   _  \    /   \     |  \ |  | \   \  /   / 
+|  |       /  ^  \  \   \/    \/   /  |  |__        |  ,----'|  |  |  | |  \  /  | |  |_)  |  /  ^  \    |   \|  |  \   \/   /  
+|  |      /  /_\  \  \            /   |   __|       |  |     |  |  |  | |  |\/|  | |   ___/  /  /_\  \   |  . `  |   \_    _/   
+|  `----./  _____  \  \    /\    /    |  |____      |  `----.|  `--'  | |  |  |  | |  |     /  _____  \  |  |\   |     |  |     
+|_______/__/     \__\  \__/  \__/     |_______|      \______| \______/  |__|  |__| | _|    /__/     \__\ |__| \__|     |__|     
+                                                                                                                             
+)" << endl;
+}
+
+void clearscreen(){
+    system("cls");
+
+}
+
 
 // === STRUCT SECTION === //
 struct Akun {
@@ -65,6 +87,7 @@ int main() {
         cout << "Gagal memuat data transaksi dari CSV.\n";
     }
     while (true) {
+        tampilkanJudul();
         int pilih = menuUtama();
         if (pilih == 1) {
             int idxLogin = login();
@@ -297,6 +320,7 @@ void setujuiProposal() {
 void menuAdmin() {
     int pilihan;
     do {
+        clearscreen();
         cout << "\n=== MENU ADMIN ===\n";
         cout << "1. Tambah Akun Baru\n";
         cout << "2. Lihat Daftar Akun\n";
@@ -402,6 +426,7 @@ bool hapusAkun(const string& emailTarget) {
 void menuAkuntan() {
     int pilihan; 
     do{
+        clearscreen();
         cout<<endl<<"----menu akuntan----"<<endl;
         cout<<"1. Catat Pemasukan"<<endl;
         cout<<"2. Ajukan Pengeluaran"<<endl;
@@ -443,12 +468,13 @@ void catatpemasukan() {
     cin.ignore();
     getline(cin, t.deskripsi);
     cout << "Jumlah: ";
-    cin >> t.jumlah;
+    cin >> t.jumlah ;
 
     daftartransaksi[totaltransaksi++] = t;
     simpanTransaksiKeCSV("transaksi.csv");
     cout << "Pemasukan dicatat.\n";
 }
+
 
 void ajukanPengeluaran() {
     Transaksi t;
@@ -492,6 +518,7 @@ void tampilkanRingkasanKeuangan() {
 void menuManajer() {
     int pilihan;  
     do{
+        clearscreen();
         cout << endl <<"----Menu Manager----" << endl;
         cout <<"1. Tampilkan Laporan Keuangan"<< endl;
         cout <<"2. Lihat Proposal"<< endl;
