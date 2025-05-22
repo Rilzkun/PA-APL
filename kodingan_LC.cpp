@@ -227,38 +227,17 @@ bool loadTransaksiDariCSV(const string& filename) {
     return true;
 }
 
-// bool simpanProposal(const Transaksi& proposal) {
-//     bool fileBaru = false;
-//     ifstream cek("proposal.csv");
-//     if (!cek.good()) fileBaru = true;
-//     cek.close();
-
-//     ofstream file("proposal.csv", ios::app);
-//     if (!file.is_open()) return false;
-
-//     if (fileBaru) {
-//         file << "id,deskripsi,jenis,jumlah\n";  // Tulis header jika file baru
-//     }
-
-//     file << proposal.id << ","
-//          << proposal.deskripsi << ","
-//          << proposal.jenis << ","
-//          << proposal.jumlah << "\n";
-
-//     file.close();
-//     return true;
-// }
-
 bool simpanProposal(const Transaksi& proposal) {
-    ofstream file("proposal.csv", ios::app);  // Buka file dalam mode append
-    if (!file.is_open()) {
-        cout << "Gagal membuka file proposal.\n";
-        return false;
-    }
+    bool fileBaru = false;
+    ifstream cek("proposal.csv");
+    if (!cek.good()) fileBaru = true;
+    cek.close();
 
-    // Jika file kosong, tulis header
-    if (file.tellp() == 0) {
-        file << "id,deskripsi,jenis,jumlah\n";
+    ofstream file("proposal.csv", ios::app);
+    if (!file.is_open()) return false;
+
+    if (fileBaru) {
+        file << "id,deskripsi,jenis,jumlah\n";  // Tulis header jika file baru
     }
 
     file << proposal.id << ","
@@ -497,25 +476,6 @@ void catatpemasukan() {
     cout << "Pemasukan dicatat.\n";
 }
 
-// void ajukanProposal() {
-//     Transaksi proposal;
-//     proposal.jenis = "pengeluaran";
-//     proposal.id = totaltransaksi + 1;
-
-//     cout << "Deskripsi: ";
-//     cin.ignore();
-//     getline(cin, proposal.deskripsi);
-
-//     cout << "Jumlah: ";
-//     cin >> proposal.jumlah;
-
-//     if (simpanProposal(proposal)) {
-//         cout << "Proposal berhasil diajukan.\n";
-//     } else {
-//         cout << "Gagal menyimpan proposal.\n";
-//     }
-// }
-
 void ajukanProposal() {
     Transaksi proposal;
     proposal.jenis = "pengeluaran";
@@ -530,13 +490,6 @@ void ajukanProposal() {
 
     if (simpanProposal(proposal)) {
         cout << "Proposal berhasil diajukan.\n";
-        
-        // Tambahkan notifikasi untuk manajer
-        ofstream notif("notifikasi.csv", ios::app);
-        if (notif.is_open()) {
-            notif << "Proposal baru diajukan: " << proposal.deskripsi << " (" << proposal.jumlah << ")\n";
-            notif.close();
-        }
     } else {
         cout << "Gagal menyimpan proposal.\n";
     }
