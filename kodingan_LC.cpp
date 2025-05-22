@@ -77,6 +77,7 @@ bool loadTransaksiDariCSV(const string& filename);
 bool simpanProposal(const Transaksi& proposal);
 void setujuiProposal();
 void tampilkanNotifikasi(); 
+void setujuiProposal(); 
 
 // === MAIN FUNCTION === //
 int main() {
