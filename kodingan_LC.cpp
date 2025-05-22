@@ -490,7 +490,7 @@ void ajukanProposal() {
 
     if (simpanProposal(proposal)) {
         cout << "Proposal berhasil diajukan.\n";
-    } else {
+    } else { 
         cout << "Gagal menyimpan proposal.\n";
     }
 }

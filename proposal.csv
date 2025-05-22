@@ -2,13 +2,6 @@
 Proposal,tes2,100
 10,tes2,pengeluaran,100
 10,tes,pengeluaran,123
-10,tes,pengeluaran,123
-10,tes,pengeluaran,100
-10,pensil,pengeluaran,100
-id,deskripsi,jenis,jumlah
-10,pensil,pengeluaran,100
-10,tes,pengeluaran,100
-10,peraut,pengeluaran,100
-10,peraut,pengeluaran,123
-10,pensil,pengeluaran,123
-10,pensil,pengeluaran,123
+
+3,peraut,pengeluaran,100
+3,kue,pengeluaran,100
