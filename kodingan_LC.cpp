@@ -36,6 +36,7 @@ struct Akun {
 };
 
 struct Transaksi {
+
     string deskripsi;
     string jenis;
     int id;
@@ -54,63 +55,7 @@ int totaltransaksi = 0;
 string currentUserEmail;
 string currentUserRole;
 
-// === FUNCTION DECLARATIONS === //
-bool loadAkunDariCSV(const string& filename);
-bool simpanAkunKeCSV(const string& filename);
-int menuUtama();
-int login();
-void menuAdmin();
-void menuAkuntan();
-void menuManajer();
 
-bool tambahAkun(Akun akunBaru);
-void lihatDaftarAkun();
-bool hapusAkun(const string& emailTarget);
-
-void catatpemasukan();
-void ajukanProposal();
-void lihatDaftarTransaksi();
-void tampilkanRingkasanKeuangan();
-void lihatProposal();
-bool simpanTransaksiKeCSV(const string& filename);
-bool loadTransaksiDariCSV(const string& filename);
-bool simpanProposal(const Transaksi& proposal);
-void setujuiProposal();
-void tampilkanNotifikasi(); 
-void setujuiProposal(); 
-
-// === MAIN FUNCTION === //
-int main() {
-    if (!loadAkunDariCSV("akun.csv")) {
-        cout << "Gagal memuat data akun dari CSV.\n";
-    }
-        if (!loadTransaksiDariCSV("transaksi.csv")) {
-        cout << "Gagal memuat data transaksi dari CSV.\n";
-    }
-    while (true) {
-        tampilkanJudul();
-        int pilih = menuUtama();
-        if (pilih == 1) {
-            int idxLogin = login();
-            if (idxLogin != -1) {
-                currentUserEmail = daftarAkun[idxLogin].email;
-                currentUserRole = daftarAkun[idxLogin].role;
-                if (currentUserRole == "admin") menuAdmin();
-                else if (currentUserRole == "akuntan") menuAkuntan();
-                else if (currentUserRole == "manajer") menuManajer();
-                else cout << "Role tidak dikenali.\n";
-            } else {
-                cout << "Login gagal 3x. Kembali ke menu utama.\n";
-            }
-        } else if (pilih == 2) {
-            cout << "Keluar dari program.\n";
-            break;
-        } else {
-            cout << "Pilihan tidak valid.\n";
-        }
-    }
-    return 0;
-}
 
 // === MENU UTAMA === //
 int menuUtama() {
@@ -316,67 +261,6 @@ void setujuiProposal() {
     clearFile.close();
 }
 
-
-// === MENU ADMIN === //
-void menuAdmin() {
-    clearscreen();
-    int pilihan;
-    do {
-        cout << "\n=== MENU ADMIN ===\n";
-        cout << "1. Tambah Akun Baru\n";
-        cout << "2. Lihat Daftar Akun\n";
-        cout << "3. Hapus Akun\n";
-        cout << "4. Kembali ke Menu Utama\n";
-        cout << "Pilih menu: ";
-        cin >> pilihan;
-
-        switch (pilihan) {
-            case 1: {
-                Akun akunBaru;
-                cout << "\n--- Tambah Akun Baru ---\n";
-                cout << "Email    : ";
-                cin >> akunBaru.email;
-                cout << "Password : ";
-                cin >> akunBaru.password;
-                cin.ignore();
-                cout << "Nama     : ";
-                getline(cin, akunBaru.nama);
-                cout << "Role (admin/akuntan/manajer): ";
-                cin >> akunBaru.role;
-
-                if (tambahAkun(akunBaru))
-                    cout << "Akun berhasil ditambahkan!\n";
-                else
-                    cout << "Gagal menambahkan akun.\n";
-                break;
-            }
-
-            case 2:
-                lihatDaftarAkun();
-                break;
-
-            case 3: {
-                string emailHapus;
-                cout << "Masukkan email akun yang ingin dihapus: ";
-                cin >> emailHapus;
-
-                if (hapusAkun(emailHapus))
-                    cout << "Akun berhasil dihapus.\n";
-                else
-                    cout << "Akun tidak ditemukan.\n";
-                break;
-            }
-
-            case 4:
-                cout << "Kembali ke menu utama...\n";
-                break;
-
-            default:
-                cout << "Pilihan tidak valid.\n";
-        }
-    } while (pilihan != 4);
-}
-
 // === ADMIN FUNCTIONS === //
 bool tambahAkun(Akun akunBaru) {
     if (totalAkun >= MAKS_AKUN) return false;
@@ -417,48 +301,79 @@ bool hapusAkun(const string& emailTarget) {
     for (int i = index; i < totalAkun - 1; i++) {
         daftarAkun[i] = daftarAkun[i + 1];
     }
-
+    
     totalAkun--;
     simpanAkunKeCSV("akun.csv");
     return true;
 }
 
-// === MENU AKUNTAN & MANAJER (placeholder) === //
-void menuAkuntan() {
+
+// === MENU ADMIN === //
+void menuAdmin() {
     clearscreen();
-    int pilihan; 
-    do{
-        cout<<endl<<"----menu akuntan----"<<endl;
-        cout<<"1. Catat Pemasukan"<<endl;
-        cout<<"2. Ajukan Proposal Pengeluaran"<<endl;
-        cout<<"3. Lihat  Daftar Transaksi"<<endl;
-        cout<<"4. Laporan Ringkasan Keuangan"<<endl;
-        cout<<"5. Kembali Ke Menu Utama"<<endl;
-        cout<<"Masukkan pilihanmu; ";
-        cin>>pilihan;
-        switch (pilihan)
-        {
-            case 1:
-                catatpemasukan();
-                break;           
-            case 2:
-                ajukanProposal();
-                break;
-            case 3:
-                lihatDaftarTransaksi();
-                break;
-            case 4:
-                tampilkanRingkasanKeuangan();
-                break;
-            case 5:
-                cout<<"balik ke menu utama"<<endl;
-                break;
-            default:
-                cout<<"pilihan tidak valid"<<endl;
-                break;
-        }
-    }while (pilihan !=5);
+    int pilihan;
     
+    do {
+        cout << "\n=== MENU ADMIN ===\n";
+        cout << "1. Tambah Akun Baru\n";
+        cout << "2. Lihat Daftar Akun\n";
+        cout << "3. Hapus Akun\n";
+        cout << "4. Kembali ke Menu Utama\n";
+        cout << "Pilih menu: ";
+
+        cin >> pilihan;
+        while (cin.fail()) {
+            cin.clear(); // clear the error flag
+            cin.ignore(1000, '\n'); // discard invalid input
+            cout << "Input tidak valid. Silakan coba lagi: ";
+            cin >> pilihan;
+        }
+
+        switch (pilihan) {
+            case 1: {
+                Akun akunBaru;
+                cout << "\n--- Tambah Akun Baru ---\n";
+                cin.ignore();
+                cout << "Email : ";
+                getline(cin, akunBaru.email);
+                cout << "Password : ";
+                getline(cin, akunBaru.password); 
+                cout << "Nama : ";
+                getline(cin, akunBaru.nama);
+                cout << "Role (admin/akuntan/manajer): ";
+                cin >> akunBaru.role;
+
+                if (tambahAkun(akunBaru))
+                    cout << "Akun berhasil ditambahkan!\n";
+                else
+                    cout << "Gagal menambahkan akun.\n";
+                break;
+            }
+
+            case 2:
+                lihatDaftarAkun();
+                break;
+
+            case 3: {
+                string emailHapus;
+                cout << "Masukkan email akun yang ingin dihapus: ";
+                cin >> emailHapus;
+
+                if (hapusAkun(emailHapus))
+                    cout << "Akun berhasil dihapus.\n";
+                else
+                    cout << "Akun tidak ditemukan.\n";
+                break;
+            }
+
+            case 4:
+                cout << "Kembali ke menu utama...\n";
+                break;
+
+            default:
+                cout << "Pilihan tidak valid.\n";
+        }
+    } while (pilihan != 4);
 }
 
 void catatpemasukan() {
@@ -518,6 +433,46 @@ void tampilkanRingkasanKeuangan() {
     cout << "Saldo Saat Ini  : " << saldo << endl;
 }
 
+
+// === MENU AKUNTAN & MANAJER (placeholder) === //
+void menuAkuntan() {
+    clearscreen();
+    int pilihan; 
+    do{
+        cout<<endl<<"----menu akuntan----"<<endl;
+        cout<<"1. Catat Pemasukan"<<endl;
+        cout<<"2. Ajukan Proposal Pengeluaran"<<endl;
+        cout<<"3. Lihat  Daftar Transaksi"<<endl;
+        cout<<"4. Laporan Ringkasan Keuangan"<<endl;
+        cout<<"5. Kembali Ke Menu Utama"<<endl;
+        cout<<"Masukkan pilihanmu; ";
+        cin>>pilihan;
+        switch (pilihan)
+        {
+            case 1:
+                catatpemasukan();
+                break;           
+            case 2:
+                ajukanProposal();
+                break;
+            case 3:
+                lihatDaftarTransaksi();
+                break;
+            case 4:
+                tampilkanRingkasanKeuangan();
+                break;
+            case 5:
+                cout<<"balik ke menu utama"<<endl;
+                break;
+            default:
+                cout<<"pilihan tidak valid"<<endl;
+                break;
+        }
+    }while (pilihan !=5);
+    
+}
+
+
 void menuManajer() {
     clearscreen();
     int pilihan;  
@@ -544,4 +499,38 @@ void menuManajer() {
                 break;
         }
     }while (pilihan !=3);
+}
+
+// === MAIN FUNCTION === //
+int main() {
+    if (!loadAkunDariCSV("akun.csv")) {
+        cout << "Gagal memuat data akun dari CSV.\n";
+    }
+        if (!loadTransaksiDariCSV("transaksi.csv")) {
+        cout << "Gagal memuat data transaksi dari CSV.\n";
+    }
+    while (true) {
+        tampilkanJudul();
+        int pilih = menuUtama();
+        if (pilih == 1) {
+            int idxLogin = login();
+            if (idxLogin != -1) {
+                currentUserEmail = daftarAkun[idxLogin].email;
+                currentUserRole = daftarAkun[idxLogin].role;
+                if (currentUserRole == "admin") menuAdmin();
+                else if (currentUserRole == "akuntan") menuAkuntan();
+                else if (currentUserRole == "manajer") menuManajer();
+                else cout << "Role tidak dikenali.\n";
+            } else {
+                cout << "Login gagal 3x. Kembali ke menu utama.\n";
+            }
+        } else if (pilih == 2) {
+            cout << "Keluar dari program.\n";
+            break;
+        } else {
+            cout << "Pilihan tidak valid.\n";
+        }
+    }
+
+    return 0;
 }
