@@ -72,6 +72,13 @@ int menuUtama() {
     cout << "2. Keluar\n";
     cout << "Pilih menu: ";
     cin >> pilihan;
+    while (cin.fail()) {
+        cin.clear(); // Clear the error flag
+        cin.ignore(1000, '\n'); // Ignore invalid input
+        cout << "Input tidak valid. Silakan masukkan angka 1/2.\n";
+        cout << "Pilih menu: ";
+        cin >> pilihan;
+    }
     return pilihan;
 }
 
@@ -360,7 +367,13 @@ void menuAdmin() {
         cout << "Pilih menu: ";
 
         cin >> pilihan;
-        cin.ignore(); // Clear newline character from input buffer
+        while (cin.fail()) {
+            cin.clear(); // Clear the error flag
+            cin.ignore(1000, '\n'); // Ignore invalid input
+            cout << "Input tidak valid. Silakan masukkan angka.\n";
+            cout << "Pilih menu: ";
+            cin >> pilihan;
+        }
 
         switch (pilihan) {
             case 1: {
@@ -592,7 +605,21 @@ int main() {
                 cout << "Login gagal 3x. Kembali ke menu utama.\n";
             }
         } else if (pilih == 2) {
-            cout << "Keluar dari program.\n";
+            cout << R"(
+              _____        _              _  __        _ _                                   
+             |_   _|__ _ _(_)_ __  __ _  | |/ /__ _ __(_) |_                                 
+               | |/ -_) '_| | '  \/ _` | | ' </ _` (_-< | ' \                                
+               |_|\___|_| |_|_|_|_\__,_| |_|\_\__,_/__/_|_||_|                               
+              _____    _      _      __  __                                   _              
+             |_   _|__| |__ _| |_   |  \/  |___ _ _  __ _ __ _ _  _ _ _  __ _| |____ _ _ _   
+               | |/ -_) / _` | ' \  | |\/| / -_) ' \/ _` / _` | || | ' \/ _` | / / _` | ' \  
+               |_|\___|_\__,_|_||_| |_|  |_\___|_||_\__, \__, |\_,_|_||_\__,_|_\_\__,_|_||_| 
+              ___                                _  |___/|___/                               
+             | _ \_ _ ___  __ _ _ _ __ _ _ __   (_)_ _ (_)                                   
+             |  _/ '_/ _ \/ _` | '_/ _` | '  \  | | ' \| |                                   
+             |_| |_| \___/\__, |_| \__,_|_|_|_| |_|_||_|_|                                   
+                          |___/                                                              
+            )" << endl;
             break;
         } else {
             cout << "Pilihan tidak valid.\n";
