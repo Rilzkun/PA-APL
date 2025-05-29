@@ -1,9 +1,2 @@
 id,deskripsi,jenis,jumlah
-9,pensil,pengeluaran,100
-Proposal,tes2,100
-10,tes2,pengeluaran,100
-10,tes,pengeluaran,123
-3,peraut,pengeluaran,100
-3,pensil,pengeluaran,100
-3,tes,pengeluaran,100
-10,keperluan kantor,pengeluaran,1000
+1,keperluan kantor,pengeluaran,1000000

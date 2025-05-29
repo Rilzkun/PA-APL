@@ -50,6 +50,10 @@ const int MAKS_TRANSAKSI = 100;
 Transaksi daftartransaksi[MAKS_TRANSAKSI];
 int totaltransaksi = 0;
 
+const int MAKS_PROPOSAL = 100;
+Transaksi daftarProposal[MAKS_PROPOSAL];
+int totalProposal = 0;
+
 string currentUserEmail;
 string currentUserRole;
 
@@ -505,19 +509,18 @@ void catatpemasukan() {
 void ajukanProposal() {
     Transaksi proposal;
     proposal.jenis = "pengeluaran";
-    proposal.id = totaltransaksi + 1;
-
+    proposal.id = totalProposal + 1;  
+    
     cout << "Deskripsi: ";
     cin.ignore();
     getline(cin, proposal.deskripsi);
-
+    
     cout << "Jumlah: ";
     cin >> proposal.jumlah;
 
+    daftarProposal[totalProposal++] = proposal;
     if (simpanProposal(proposal)) {
-        cout << "Proposal berhasil diajukan.\n";
-    } else { 
-        cout << "Gagal menyimpan proposal.\n";
+        cout << "Proposal berhasil diajukan dengan ID: " << proposal.id << ".\n";
     }
 }
 
