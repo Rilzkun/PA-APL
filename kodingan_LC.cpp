@@ -19,10 +19,10 @@ void tampilkanJudul() {
 )" << endl;
 }
 
-void clearscreen(){
-    system("cls");
+// void clearscreen(){
+//     system("cls");
 
-}
+// }
 
 
 // === STRUCT SECTION === //
@@ -496,7 +496,7 @@ void tampilkanRingkasanKeuangan() {
 
 // === MENU AKUNTAN & MANAJER (placeholder) === //
 void menuAkuntan() {
-    clearscreen();
+    // clearscreen();
     int pilihan; 
     do{
         cout << R"(
@@ -544,7 +544,7 @@ void menuAkuntan() {
 
 
 void menuManajer() {
-    clearscreen();
+    // clearscreen();
     int pilihan;  
     do{
         cout << R"(
