@@ -7,9 +7,6 @@
 #include <iomanip>
 using namespace std;
 
-#include <iostream>
-using namespace std;
-
 void tampilkanJudul() {
     cout << R"( 
  __          ___   ____    __    ____  _______        ______   ______   .___  ___. .______      ___      .__   __. ____    ____ 
@@ -75,6 +72,13 @@ int menuUtama() {
     cout << "2. Keluar\n";
     cout << "Pilih menu: ";
     cin >> pilihan;
+    while (cin.fail()) {
+        cin.clear(); // Clear the error flag
+        cin.ignore(1000, '\n'); // Ignore invalid input
+        cout << "Input tidak valid. Silakan masukkan angka 1/2.\n";
+        cout << "Pilih menu: ";
+        cin >> pilihan;
+    }
     return pilihan;
 }
 
@@ -297,13 +301,26 @@ bool tambahAkun(Akun akunBaru) {
 }
 
 void lihatDaftarAkun() {
-    cout << "\n=== DAFTAR AKUN ===\n";
-    for (int i = 0; i < totalAkun; i++) {
-        cout << i + 1 << ". "
-             << daftarAkun[i].nama << " | "
-             << daftarAkun[i].email << " | "
-             << daftarAkun[i].role << endl;
+    cout << "\n=============================== DAFTAR AKUN ===============================\n";
+    if (totalAkun == 0) {
+        cout << "Tidak ada akun yang terdaftar.\n";
+        return;
     }
+    // Print table header with border
+    cout << "+-----+--------------------+------------------------------+---------------+" << endl;
+    cout << "|" << left << setw(5) << "No"
+         << "|" << left << setw(20) << "Nama"
+         << "|" << left << setw(30) << "Email"
+         << "|" << left << setw(15) << "Role" << "|" << endl;
+    cout << "+-----+--------------------+------------------------------+---------------+" << endl;
+    // Print table rows
+    for (int i = 0; i < totalAkun; i++) {
+        cout << "|" << left << setw(5) << (i + 1)
+             << "|" << left << setw(20) << daftarAkun[i].nama
+             << "|" << left << setw(30) << daftarAkun[i].email
+             << "|" << left << setw(15) << daftarAkun[i].role << "|" << endl;
+    }
+    cout << "+-----+--------------------+------------------------------+---------------+" << endl;
 }
 
 bool hapusAkun(const string& emailTarget) {
@@ -329,11 +346,20 @@ bool hapusAkun(const string& emailTarget) {
 
 // === MENU ADMIN === //
 void menuAdmin() {
-    clearscreen();
+    // clearscreen();
     int pilihan;
     
     do {
-        cout << "\n=== MENU ADMIN ===\n";
+        cout << R"(
+        ===================================================================================================
+        |  .___  ___.  _______ .__   __.  __    __          ___       _______  .___  ___.  __  .__   __.  |
+        |  |   \/   | |   ____||  \ |  | |  |  |  |        /   \     |       \ |   \/   | |  | |  \ |  |  |
+        |  |  \  /  | |  |__   |   \|  | |  |  |  |       /  ^  \    |  .--.  ||  \  /  | |  | |   \|  |  |
+        |  |  |\/|  | |   __|  |  . `  | |  |  |  |      /  /_\  \   |  |  |  ||  |\/|  | |  | |  . `  |  |
+        |  |  |  |  | |  |____ |  |\   | |  `--'  |     /  _____  \  |  '--'  ||  |  |  | |  | |  |\   |  |
+        |  |__|  |__| |_______||__| \__|  \______/     /__/     \__\ |_______/ |__|  |__| |__| |__| \__|  |
+        ===================================================================================================
+        )" << endl;
         cout << "1. Tambah Akun Baru\n";
         cout << "2. Lihat Daftar Akun\n";
         cout << "3. Hapus Akun\n";
@@ -342,9 +368,10 @@ void menuAdmin() {
 
         cin >> pilihan;
         while (cin.fail()) {
-            cin.clear(); // clear the error flag
-            cin.ignore(1000, '\n'); // discard invalid input
-            cout << "Input tidak valid. Silakan coba lagi: ";
+            cin.clear(); // Clear the error flag
+            cin.ignore(1000, '\n'); // Ignore invalid input
+            cout << "Input tidak valid. Silakan masukkan angka.\n";
+            cout << "Pilih menu: ";
             cin >> pilihan;
         }
 
@@ -352,16 +379,30 @@ void menuAdmin() {
             case 1: {
                 Akun akunBaru;
                 cout << "\n--- Tambah Akun Baru ---\n";
-                cin.ignore();
-                cout << "Email : ";
-                getline(cin, akunBaru.email);
+                // Validasi email
+                while (true) {
+                    cout << "Email : ";
+                    getline(cin, akunBaru.email);
+                    if (akunBaru.email.size() >= 9 && akunBaru.email.substr(akunBaru.email.size() - 9) == "@lawe.com") {
+                        break;
+                    } else {
+                        cout << "Email harus diakhiri dengan '@lawe.com'. Silakan ulangi.\n";
+                    }
+                }
                 cout << "Password : ";
-                getline(cin, akunBaru.password); 
+                getline(cin, akunBaru.password);
                 cout << "Nama : ";
                 getline(cin, akunBaru.nama);
-                cout << "Role (admin/akuntan/manajer): ";
-                cin >> akunBaru.role;
-
+                // Validasi role
+                while (true) {
+                    cout << "Role (admin/akuntan/manajer): ";
+                    getline(cin, akunBaru.role);
+                    if (akunBaru.role == "admin" || akunBaru.role == "akuntan" || akunBaru.role == "manajer") {
+                        break;
+                    } else {
+                        cout << "Role hanya boleh 'admin', 'akuntan', atau 'manajer'. Silakan ulangi.\n";
+                    }
+                }
                 if (tambahAkun(akunBaru))
                     cout << "Akun berhasil ditambahkan!\n";
                 else
@@ -458,7 +499,17 @@ void menuAkuntan() {
     clearscreen();
     int pilihan; 
     do{
-        cout<<endl<<"----menu akuntan----"<<endl;
+        cout << R"(
+        =====================================================================================================================
+        | .___  ___.  _______ .__   __.  __    __          ___       __  ___  __    __  .___________.    ___      .__   __. |
+        | |   \/   | |   ____||  \ |  | |  |  |  |        /   \     |  |/  / |  |  |  | |           |   /   \     |  \ |  | |
+        | |  \  /  | |  |__   |   \|  | |  |  |  |       /  ^  \    |  '  /  |  |  |  | `---|  |----`  /  ^  \    |   \|  | |
+        | |  |\/|  | |   __|  |  . `  | |  |  |  |      /  /_\  \   |    <   |  |  |  |     |  |      /  /_\  \   |  . `  | |
+        | |  |  |  | |  |____ |  |\   | |  `--'  |     /  _____  \  |  .  \  |  `--'  |     |  |     /  _____  \  |  |\   | |
+        | |__|  |__| |_______||__| \__|  \______/     /__/     \__\ |__|\__\  \______/      |__|    /__/     \__\ |__| \__| |
+        =====================================================================================================================
+        )" << endl;
+
         cout<<"1. Catat Pemasukan"<<endl;
         cout<<"2. Ajukan Proposal Pengeluaran"<<endl;
         cout<<"3. Lihat  Daftar Transaksi"<<endl;
@@ -496,7 +547,17 @@ void menuManajer() {
     clearscreen();
     int pilihan;  
     do{
-        cout << endl <<"----Menu Manager----" << endl;
+        cout << R"(
+        ===============================================================================================================================
+        | .___  ___.  _______ .__   __.  __    __     .___  ___.      ___      .__   __.      ___       _______  _______ .______      |
+        | |   \/   | |   ____||  \ |  | |  |  |  |    |   \/   |     /   \     |  \ |  |     /   \     /  _____||   ____||   _  \     |
+        | |  \  /  | |  |__   |   \|  | |  |  |  |    |  \  /  |    /  ^  \    |   \|  |    /  ^  \   |  |  __  |  |__   |  |_)  |    |
+        | |  |\/|  | |   __|  |  . `  | |  |  |  |    |  |\/|  |   /  /_\  \   |  . `  |   /  /_\  \  |  | |_ | |   __|  |      /     |
+        | |  |  |  | |  |____ |  |\   | |  `--'  |    |  |  |  |  /  _____  \  |  |\   |  /  _____  \ |  |__| | |  |____ |  |\  \----.|
+        | |__|  |__| |_______||__| \__|  \______/     |__|  |__| /__/     \__\ |__| \__| /__/     \__\ \______| |_______|| _| `._____||
+        ===============================================================================================================================
+        )" << endl;
+
         cout <<"1. Tampilkan Laporan Keuangan"<< endl;
         cout <<"2. Lihat Proposal"<< endl;
         cout << "3. Kembali Ke Menu Utama"<< endl;
@@ -544,7 +605,21 @@ int main() {
                 cout << "Login gagal 3x. Kembali ke menu utama.\n";
             }
         } else if (pilih == 2) {
-            cout << "Keluar dari program.\n";
+            cout << R"(
+              _____        _              _  __        _ _                                   
+             |_   _|__ _ _(_)_ __  __ _  | |/ /__ _ __(_) |_                                 
+               | |/ -_) '_| | '  \/ _` | | ' </ _` (_-< | ' \                                
+               |_|\___|_| |_|_|_|_\__,_| |_|\_\__,_/__/_|_||_|                               
+              _____    _      _      __  __                                   _              
+             |_   _|__| |__ _| |_   |  \/  |___ _ _  __ _ __ _ _  _ _ _  __ _| |____ _ _ _   
+               | |/ -_) / _` | ' \  | |\/| / -_) ' \/ _` / _` | || | ' \/ _` | / / _` | ' \  
+               |_|\___|_\__,_|_||_| |_|  |_\___|_||_\__, \__, |\_,_|_||_\__,_|_\_\__,_|_||_| 
+              ___                                _  |___/|___/                               
+             | _ \_ _ ___  __ _ _ _ __ _ _ __   (_)_ _ (_)                                   
+             |  _/ '_/ _ \/ _` | '_/ _` | '  \  | | ' \| |                                   
+             |_| |_| \___/\__, |_| \__,_|_|_|_| |_|_||_|_|                                   
+                          |___/                                                              
+            )" << endl;
             break;
         } else {
             cout << "Pilihan tidak valid.\n";
