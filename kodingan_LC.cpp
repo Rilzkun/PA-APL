@@ -19,10 +19,10 @@ void tampilkanJudul() {
 )" << endl;
 }
 
-// void clearscreen(){
-//     system("cls");
+void clearscreen(){
+    system("cls");
 
-// }
+}
 
 
 // === STRUCT SECTION === //
@@ -435,6 +435,57 @@ void menuAdmin() {
         }
     } while (pilihan != 4);
 }
+// Fungsi untuk mengurutkan transaksi berdasarkan jumlah (ascending)
+void urutkanJumlahAscending() {
+    for (int i = 0; i < totaltransaksi - 1; i++) {
+        for (int j = 0; j < totaltransaksi - i - 1; j++) {
+            if (daftartransaksi[j].jumlah > daftartransaksi[j + 1].jumlah) {
+                Transaksi temp = daftartransaksi[j];
+                daftartransaksi[j] = daftartransaksi[j + 1];
+                daftartransaksi[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Fungsi untuk mengurutkan transaksi berdasarkan jumlah (descending)
+void urutkanJumlahDescending() {
+    for (int i = 0; i < totaltransaksi - 1; i++) {
+        for (int j = 0; j < totaltransaksi - i - 1; j++) {
+            if (daftartransaksi[j].jumlah < daftartransaksi[j + 1].jumlah) {
+                Transaksi temp = daftartransaksi[j];
+                daftartransaksi[j] = daftartransaksi[j + 1];
+                daftartransaksi[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Fungsi untuk mengurutkan transaksi berdasarkan ID (ascending)
+void urutkanIDAscending() {
+    for (int i = 0; i < totaltransaksi - 1; i++) {
+        for (int j = 0; j < totaltransaksi - i - 1; j++) {
+            if (daftartransaksi[j].id > daftartransaksi[j + 1].id) {
+                Transaksi temp = daftartransaksi[j];
+                daftartransaksi[j] = daftartransaksi[j + 1];
+                daftartransaksi[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Fungsi untuk mengurutkan transaksi berdasarkan ID (descending)
+void urutkanIDDescending() {
+    for (int i = 0; i < totaltransaksi - 1; i++) {
+        for (int j = 0; j < totaltransaksi - i - 1; j++) {
+            if (daftartransaksi[j].id < daftartransaksi[j + 1].id) {
+                Transaksi temp = daftartransaksi[j];
+                daftartransaksi[j] = daftartransaksi[j + 1];
+                daftartransaksi[j + 1] = temp;
+            }
+        }
+    }
+}
 
 void catatpemasukan() {
     Transaksi t;
@@ -495,10 +546,56 @@ void tampilkanRingkasanKeuangan() {
 
 
 // === MENU AKUNTAN & MANAJER (placeholder) === //
+// void menuAkuntan() {
+//     clearscreen();
+//     int pilihan; 
+//     do{
+//         cout << R"(
+//         =====================================================================================================================
+//         | .___  ___.  _______ .__   __.  __    __          ___       __  ___  __    __  .___________.    ___      .__   __. |
+//         | |   \/   | |   ____||  \ |  | |  |  |  |        /   \     |  |/  / |  |  |  | |           |   /   \     |  \ |  | |
+//         | |  \  /  | |  |__   |   \|  | |  |  |  |       /  ^  \    |  '  /  |  |  |  | `---|  |----`  /  ^  \    |   \|  | |
+//         | |  |\/|  | |   __|  |  . `  | |  |  |  |      /  /_\  \   |    <   |  |  |  |     |  |      /  /_\  \   |  . `  | |
+//         | |  |  |  | |  |____ |  |\   | |  `--'  |     /  _____  \  |  .  \  |  `--'  |     |  |     /  _____  \  |  |\   | |
+//         | |__|  |__| |_______||__| \__|  \______/     /__/     \__\ |__|\__\  \______/      |__|    /__/     \__\ |__| \__| |
+//         =====================================================================================================================
+//         )" << endl;
+
+//         cout<<"1. Catat Pemasukan"<<endl;
+//         cout<<"2. Ajukan Proposal Pengeluaran"<<endl;
+//         cout<<"3. Lihat  Daftar Transaksi"<<endl;
+//         cout<<"4. Laporan Ringkasan Keuangan"<<endl;
+//         cout<<"5. Kembali Ke Menu Utama"<<endl;
+//         cout<<"Masukkan pilihanmu; ";
+//         cin>>pilihan;
+//         switch (pilihan)
+//         {
+//             case 1:
+//                 catatpemasukan();
+//                 break;           
+//             case 2:
+//                 ajukanProposal();
+//                 break;
+//             case 3:
+//                 lihatDaftarTransaksi();
+//                 break;
+//             case 4:
+//                 tampilkanRingkasanKeuangan();
+//                 break;
+//             case 5:
+//                 cout<<"balik ke menu utama"<<endl;
+//                 break;
+//             default:
+//                 cout<<"pilihan tidak valid"<<endl;
+//                 break;
+//         }
+//     }while (pilihan !=5);
+    
+// }
 void menuAkuntan() {
-    // clearscreen();
+    clearscreen();
     int pilihan; 
-    do{
+    do {
         cout << R"(
         =====================================================================================================================
         | .___  ___.  _______ .__   __.  __    __          ___       __  ___  __    __  .___________.    ___      .__   __. |
@@ -510,15 +607,16 @@ void menuAkuntan() {
         =====================================================================================================================
         )" << endl;
 
-        cout<<"1. Catat Pemasukan"<<endl;
-        cout<<"2. Ajukan Proposal Pengeluaran"<<endl;
-        cout<<"3. Lihat  Daftar Transaksi"<<endl;
-        cout<<"4. Laporan Ringkasan Keuangan"<<endl;
-        cout<<"5. Kembali Ke Menu Utama"<<endl;
-        cout<<"Masukkan pilihanmu; ";
-        cin>>pilihan;
-        switch (pilihan)
-        {
+        cout << "1. Catat Pemasukan" << endl;
+        cout << "2. Ajukan Proposal Pengeluaran" << endl;
+        cout << "3. Lihat Daftar Transaksi" << endl;
+        cout << "4. Urutkan Daftar Transaksi" << endl;  // Opsi baru
+        cout << "5. Laporan Ringkasan Keuangan" << endl;
+        cout << "6. Kembali Ke Menu Utama" << endl;
+        cout << "Masukkan pilihanmu: ";
+        cin >> pilihan;
+
+        switch (pilihan) {
             case 1:
                 catatpemasukan();
                 break;           
@@ -528,23 +626,56 @@ void menuAkuntan() {
             case 3:
                 lihatDaftarTransaksi();
                 break;
-            case 4:
+            case 4: {
+                int sortChoice;
+                cout << "\n=== URUTKAN TRANSAKSI ===" << endl;
+                cout << "1. Berdasarkan Jumlah (Ascending)" << endl;
+                cout << "2. Berdasarkan Jumlah (Descending)" << endl;
+                cout << "3. Berdasarkan ID (Ascending)" << endl;
+                cout << "4. Berdasarkan ID (Descending)" << endl;
+                cout << "Pilih metode pengurutan: ";
+                cin >> sortChoice;
+
+                switch (sortChoice) {
+                    case 1:
+                        urutkanJumlahAscending();
+                        cout << "Transaksi diurutkan berdasarkan jumlah (ascending)." << endl;
+                        lihatDaftarTransaksi();
+                        break;
+                    case 2:
+                        urutkanJumlahDescending();
+                        cout << "Transaksi diurutkan berdasarkan jumlah (descending)." << endl;
+                        lihatDaftarTransaksi();
+                        break;
+                    case 3:
+                        urutkanIDAscending();
+                        cout << "Transaksi diurutkan berdasarkan ID (ascending)." << endl;
+                        lihatDaftarTransaksi();
+                        break;
+                    case 4:
+                        urutkanIDDescending();
+                        cout << "Transaksi diurutkan berdasarkan ID (descending)." << endl;
+                        lihatDaftarTransaksi();
+                        break;
+                    default:
+                        cout << "Pilihan tidak valid." << endl;
+                }
+                break;
+            }
+            case 5:
                 tampilkanRingkasanKeuangan();
                 break;
-            case 5:
-                cout<<"balik ke menu utama"<<endl;
+            case 6:
+                cout << "Kembali ke menu utama" << endl;
                 break;
             default:
-                cout<<"pilihan tidak valid"<<endl;
-                break;
+                cout << "Pilihan tidak valid" << endl;
         }
-    }while (pilihan !=5);
-    
+    } while (pilihan != 6);
 }
 
-
 void menuManajer() {
-    // clearscreen();
+    clearscreen();
     int pilihan;  
     do{
         cout << R"(
