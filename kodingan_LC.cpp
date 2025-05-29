@@ -544,54 +544,6 @@ void tampilkanRingkasanKeuangan() {
     cout << "Saldo Saat Ini  : " << saldo << endl;
 }
 
-
-// === MENU AKUNTAN & MANAJER (placeholder) === //
-// void menuAkuntan() {
-//     clearscreen();
-//     int pilihan; 
-//     do{
-//         cout << R"(
-//         =====================================================================================================================
-//         | .___  ___.  _______ .__   __.  __    __          ___       __  ___  __    __  .___________.    ___      .__   __. |
-//         | |   \/   | |   ____||  \ |  | |  |  |  |        /   \     |  |/  / |  |  |  | |           |   /   \     |  \ |  | |
-//         | |  \  /  | |  |__   |   \|  | |  |  |  |       /  ^  \    |  '  /  |  |  |  | `---|  |----`  /  ^  \    |   \|  | |
-//         | |  |\/|  | |   __|  |  . `  | |  |  |  |      /  /_\  \   |    <   |  |  |  |     |  |      /  /_\  \   |  . `  | |
-//         | |  |  |  | |  |____ |  |\   | |  `--'  |     /  _____  \  |  .  \  |  `--'  |     |  |     /  _____  \  |  |\   | |
-//         | |__|  |__| |_______||__| \__|  \______/     /__/     \__\ |__|\__\  \______/      |__|    /__/     \__\ |__| \__| |
-//         =====================================================================================================================
-//         )" << endl;
-
-//         cout<<"1. Catat Pemasukan"<<endl;
-//         cout<<"2. Ajukan Proposal Pengeluaran"<<endl;
-//         cout<<"3. Lihat  Daftar Transaksi"<<endl;
-//         cout<<"4. Laporan Ringkasan Keuangan"<<endl;
-//         cout<<"5. Kembali Ke Menu Utama"<<endl;
-//         cout<<"Masukkan pilihanmu; ";
-//         cin>>pilihan;
-//         switch (pilihan)
-//         {
-//             case 1:
-//                 catatpemasukan();
-//                 break;           
-//             case 2:
-//                 ajukanProposal();
-//                 break;
-//             case 3:
-//                 lihatDaftarTransaksi();
-//                 break;
-//             case 4:
-//                 tampilkanRingkasanKeuangan();
-//                 break;
-//             case 5:
-//                 cout<<"balik ke menu utama"<<endl;
-//                 break;
-//             default:
-//                 cout<<"pilihan tidak valid"<<endl;
-//                 break;
-//         }
-//     }while (pilihan !=5);
-    
-// }
 void menuAkuntan() {
     clearscreen();
     int pilihan; 
@@ -627,16 +579,16 @@ void menuAkuntan() {
                 lihatDaftarTransaksi();
                 break;
             case 4: {
-                int sortChoice;
+                int pilihsort;;
                 cout << "\n=== URUTKAN TRANSAKSI ===" << endl;
                 cout << "1. Berdasarkan Jumlah (Ascending)" << endl;
                 cout << "2. Berdasarkan Jumlah (Descending)" << endl;
                 cout << "3. Berdasarkan ID (Ascending)" << endl;
                 cout << "4. Berdasarkan ID (Descending)" << endl;
                 cout << "Pilih metode pengurutan: ";
-                cin >> sortChoice;
+                cin >> pilihsort;
 
-                switch (sortChoice) {
+                switch (pilihsort) {
                     case 1:
                         urutkanJumlahAscending();
                         cout << "Transaksi diurutkan berdasarkan jumlah (ascending)." << endl;

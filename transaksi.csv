@@ -1,17 +1,2 @@
 id,deskripsi,jenis,jumlah
-13,penjualan,pemasukan,1230000
-12,penjualan 1230000,pemasukan,3
-11,penjualan,pemasukan,90000000
-10,penjualan,pemasukan,7000000
-9,penjualan,pemasukan,7000000
-8,penjualan,pemasukan,6000000
-7,penjualan,pemasukan,5000000
-6,penjualan,pemasukan,4000000
-5,penjualan produk,pemasukan,100
-4,Penjualan produk 4000000,pemasukan,3
-3,penjualan produk,pemasukan,2000000
-2,Pengajuan Biaya Operasional,pengeluaran,300000
-1,Penjualan Produk,pemasukan,1000000
-14,pengeluaran,pemasukan,123000000
-15,pengeluaran,pemasukan,12000000
-16,pengeluaran,pemasukan,123400000
+1,penjualan produk,pemasukan,1000000
