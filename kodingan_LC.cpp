@@ -266,6 +266,52 @@ void setujuiProposal() {
 }
 
 // === ADMIN FUNCTIONS === //
+
+int rolePriority(const string& role) {
+    if (role == "admin") return 1;
+    else if (role == "manajer") return 2;
+    else if (role == "akuntan") return 3;
+    else return 4;
+}
+
+void sortingRole(vector<Akun>& data) {
+    for (int i = 1; i < data.size(); ++i) {
+        Akun key = data[i];
+        int j = i - 1;
+
+        // Bandingkan berdasarkan prioritas role
+        while (j >= 0 && rolePriority(data[j].role) > rolePriority(key.role)) {
+            data[j + 1] = data[j];
+            j--;
+        }
+        data[j + 1] = key;
+    }
+}
+
+vector<Akun> bacaAkunDariCSV(const string& namaFile) {
+    vector<Akun> daftarAkun;
+    ifstream file(namaFile);
+    string line;
+
+    if (getline(file, line)) {
+    }
+
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string email, password, nama, role;
+
+        getline(ss, email, ',');
+        getline(ss, password, ',');
+        getline(ss, nama, ',');
+        getline(ss, role, ',');
+
+        daftarAkun.push_back({email, password, nama, role});
+    }
+
+    file.close();
+    return daftarAkun;
+}
+
 bool tambahAkun(Akun akunBaru) {
     if (totalAkun >= MAKS_AKUN) return false;
 
@@ -281,8 +327,8 @@ bool tambahAkun(Akun akunBaru) {
     return true;
 }
 
-void lihatDaftarAkun() {
-    cout << "\n=============================== DAFTAR AKUN ===============================\n";
+void tampilkanAkun(const vector<Akun>& daftarAkun) {
+        cout << "\n=============================== DAFTAR AKUN ===============================\n";
     if (totalAkun == 0) {
         cout << "Tidak ada akun yang terdaftar.\n";
         return;
@@ -293,13 +339,21 @@ void lihatDaftarAkun() {
          << "|" << left << setw(30) << "Email"
          << "|" << left << setw(15) << "Role" << "|" << endl;
     cout << "+-----+--------------------+------------------------------+---------------+" << endl;
-    for (int i = 0; i < totalAkun; i++) {
-        cout << "|" << left << setw(5) << (i + 1)
-             << "|" << left << setw(20) << daftarAkun[i].nama
-             << "|" << left << setw(30) << daftarAkun[i].email
-             << "|" << left << setw(15) << daftarAkun[i].role << "|" << endl;
+    int nomor = 0;
+    for (const auto& akun : daftarAkun) {
+        cout << "|" << left << setw(20) << (nomor + 1)
+             << "|" << left << setw(20) << akun.nama
+             << "|" << left << setw(30) << akun.email
+             << "|" << left << setw(15) << akun.role << "|" << endl;
+        nomor++;
     }
     cout << "+-----+--------------------+------------------------------+---------------+" << endl;
+}
+
+void lihatDaftarAkun() {
+    vector<Akun> akunList = bacaAkunDariCSV("akun.csv");
+    sortingRole(akunList);
+    tampilkanAkun(akunList);
 }
 
 bool hapusAkun(const string& emailTarget) {
@@ -665,7 +719,7 @@ int main() {
     if (!loadAkunDariCSV("akun.csv")) {
         cout << "Gagal memuat data akun dari CSV.\n";
     }
-        if (!loadTransaksiDariCSV("transaksi.csv")) {
+    if (!loadTransaksiDariCSV("transaksi.csv")) {
         cout << "Gagal memuat data transaksi dari CSV.\n";
     }
     while (true) {
@@ -687,11 +741,11 @@ int main() {
             cout << R"(
               _____        _              _  __        _ _                                   
              |_   _|__ _ _(_)_ __  __ _  | |/ /__ _ __(_) |_                                 
-               | |/ -_) '_| | '  \/ _` | | ' </ _` (_-< | ' \                                
+               | |/ -_) '_| | '  \/ _` | | ' </ _` (_-< | ' \
                |_|\___|_| |_|_|_|_\__,_| |_|\_\__,_/__/_|_||_|                               
               _____    _      _      __  __                                   _              
              |_   _|__| |__ _| |_   |  \/  |___ _ _  __ _ __ _ _  _ _ _  __ _| |____ _ _ _   
-               | |/ -_) / _` | ' \  | |\/| / -_) ' \/ _` / _` | || | ' \/ _` | / / _` | ' \  
+               | |/ -_) / _` | ' \  | |\/| / -_) ' \/ _` / _` | || | ' \/ _` | / / _` | ' \
                |_|\___|_\__,_|_||_| |_|  |_\___|_||_\__, \__, |\_,_|_||_\__,_|_\_\__,_|_||_| 
               ___                                _  |___/|___/                               
              | _ \_ _ ___  __ _ _ _ __ _ _ __   (_)_ _ (_)                                   
