@@ -72,8 +72,8 @@ int menuUtama() {
     cout << "Pilih menu: ";
     cin >> pilihan;
     while (cin.fail()) {
-        cin.clear(); // Clear the error flag
-        cin.ignore(1000, '\n'); // Ignore invalid input
+        cin.clear();
+        cin.ignore(1000, '\n');
         cout << "Input tidak valid. Silakan masukkan angka 1/2.\n";
         cout << "Pilih menu: ";
         cin >> pilihan;
