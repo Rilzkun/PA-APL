@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 // void catatpemasukan() {
 //     Transaksi t;
@@ -953,3 +954,5 @@ int main() {
 
     return 0;
 }
+=======
+>>>>>>> 695405fb9770880d346b3d964198a688134b8c75
