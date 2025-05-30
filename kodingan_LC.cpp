@@ -65,10 +65,10 @@ int menuUtama() {
 | |  |\/|  | |   __|  |  . `  | |  |  |  |    |  |  |  |     |  |      /  /_\  \   |  |\/|  |   /  /_\  \   | 
 | |  |  |  | |  |____ |  |\   | |  `--'  |    |  `--'  |     |  |     /  _____  \  |  |  |  |  /  _____  \  | 
 | |__|  |__| |_______||__| \__|  \______/      \______/      |__|    /__/     \__\ |__|  |__| /__/     \__\ | 
-=============================================================================================================
-    )" << endl;
-    cout << "1. Login\n";
-    cout << "2. Keluar\n";
+=============================================================================================================)" << endl;
+    cout << "|  1  | Login                                                                                               |\n";
+    cout << "|  2  | Keluar                                                                                              |\n";
+    cout << "+-----+-----------------------------------------------------------------------------------------------------+\n";
     cout << "Pilih menu: ";
     cin >> pilihan;
     while (cin.fail()) {
@@ -312,6 +312,7 @@ void setujuiProposal() {
 
     int lastID = getLastTransactionID("transaksi.csv");
     int newID = lastID + 1;
+    
     outTransaksi << newID << "," << disetujui.deskripsi << "," << disetujui.jenis << "," << disetujui.jumlah << "\n";
     outTransaksi.close();
 
@@ -322,12 +323,16 @@ void setujuiProposal() {
         return;
     }
 
-    outProposal << header << "\n";
-    for (size_t i = 0; i < rawLines.size(); ++i) {
+    outProposal << "id,deskripsi,jenis,jumlah\n";
+    int idBaru = 1;
+    for (size_t i = 0; i < semuaProposal.size(); ++i) {
         if ((int)i != pilihan - 1) {
-            outProposal << rawLines[i] << "\n";
+            Transaksi t = semuaProposal[i];
+            t.id = idBaru++;
+            outProposal << t.id << "," << t.deskripsi << "," << t.jenis << "," << t.jumlah << "\n";
         }
     }
+
     outProposal.close();
 
     cout << "Proposal \"" << disetujui.deskripsi << "\" telah disetujui dan dipindahkan ke transaksi.csv.\n";
@@ -410,7 +415,7 @@ void tampilkanAkun(const vector<Akun>& daftarAkun) {
     cout << "+-----+--------------------+------------------------------+---------------+" << endl;
     int nomor = 0;
     for (const auto& akun : daftarAkun) {
-        cout << "|" << left << setw(20) << (nomor + 1)
+        cout << "|" << left << setw(5) << (nomor + 1)
              << "|" << left << setw(20) << akun.nama
              << "|" << left << setw(30) << akun.email
              << "|" << left << setw(15) << akun.role << "|" << endl;
@@ -470,8 +475,8 @@ void menuAdmin() {
 
         cin >> pilihan;
         while (cin.fail()) {
-            cin.clear(); // Clear the error flag
-            cin.ignore(1000, '\n'); // Ignore invalid input
+            cin.clear(); 
+            cin.ignore(1000, '\n'); 
             cout << "Input tidak valid. Silakan masukkan angka.\n";
             cout << "Pilih menu: ";
             cin >> pilihan;
@@ -491,8 +496,24 @@ void menuAdmin() {
                         cout << "Email harus diakhiri dengan '@lawe.com'. Silakan ulangi.\n";
                     }
                 }
-                cout << "Password : ";
-                getline(cin, akunBaru.password);
+                // Validasi password
+                while (true) {
+                    cout << "Password : ";
+                    getline(cin, akunBaru.password);
+                    // Cek jika password tidak kosong dan tidak hanya spasi
+                    bool hanyaSpasi = true;
+                    for (char c : akunBaru.password) {
+                        if (!isspace(c)) {
+                            hanyaSpasi = false;
+                            break;
+                        }
+                    }
+                    if (!akunBaru.password.empty() && !hanyaSpasi) {
+                        break;
+                    } else {
+                        cout << "Password tidak boleh kosong atau hanya spasi. Silakan ulangi.\n";
+                    }
+                }
                 cout << "Nama : ";
                 getline(cin, akunBaru.nama);
                 // Validasi role
@@ -518,6 +539,7 @@ void menuAdmin() {
 
             case 3: {
                 string emailHapus;
+                lihatDaftarAkun();
                 cout << "Masukkan email akun yang ingin dihapus: ";
                 cin >> emailHapus;
 
@@ -583,6 +605,29 @@ void urutkanIDDescending() {
                 daftartransaksi[j + 1] = temp;
             }
         }
+    }
+}
+
+void cariTransaksiBerdasarkanID() {
+    int cariID;
+    cout << "Masukkan ID Transaksi yang ingin dicari: ";
+    cin >> cariID;
+
+    bool ditemukan = false;
+    for (int i = 0; i < totaltransaksi; i++) {
+        if (daftartransaksi[i].id == cariID) {
+            cout << "\n=== Transaksi Ditemukan ===\n";
+            cout << "ID        : " << daftartransaksi[i].id << endl;
+            cout << "Deskripsi : " << daftartransaksi[i].deskripsi << endl;
+            cout << "Jenis     : " << daftartransaksi[i].jenis << endl;
+            cout << "Jumlah    : " << daftartransaksi[i].jumlah << endl;
+            ditemukan = true;
+            break;
+        }
+    }
+
+    if (!ditemukan) {
+        cout << "Transaksi dengan ID " << cariID << " tidak ditemukan.\n";
     }
 }
 
@@ -673,15 +718,16 @@ void menuAkuntan() {
         cout << "|  2  | Ajukan Proposal Pengeluaran                                                                                 |\n";
         cout << "|  3  | Lihat Daftar Transaksi                                                                                      |\n";
         cout << "|  4  | Urutkan Daftar Transaksi                                                                                    |\n";
-        cout << "|  5  | Laporan Ringkasan Keuangan                                                                                  |\n";
-        cout << "|  6  | Kembali Ke Menu Utama                                                                                       |\n";
+        cout << "|  5  | Mencari 1 Transaksi Berdasarkan ID                                                                          |\n";
+        cout << "|  6  | Laporan Ringkasan Keuangan                                                                                  |\n";
+        cout << "|  7  | Kembali Ke Menu Utama                                                                                       |\n";
         cout << "+-----+-------------------------------------------------------------------------------------------------------------+\n";
         cout << "Masukkan pilihanmu: ";
         cin >> pilihan;
         while (cin.fail()) {
             cin.clear(); // Clear the error flag
             cin.ignore(1000, '\n'); // Ignore invalid input
-            cout << "Input tidak valid. Silakan masukkan angka 1-6.\n";
+            cout << "Input tidak valid. Silakan masukkan angka 1-7.\n";
             cout << "Masukkan pilihanmu: ";
             cin >> pilihan;
         }
@@ -740,15 +786,18 @@ void menuAkuntan() {
                 break;
             }
             case 5:
-                tampilkanRingkasanKeuangan();
+                cariTransaksiBerdasarkanID();
                 break;
             case 6:
+                tampilkanRingkasanKeuangan();
+                break;
+            case 7:
                 cout << "Kembali ke menu utama" << endl;
                 break;
             default:
                 cout << "Pilihan tidak valid" << endl;
         }
-    } while (pilihan != 6);
+    } while (pilihan != 7);
 }
 
 void menuManajer() {
@@ -764,7 +813,6 @@ void menuManajer() {
 | |__|  |__| |_______||__| \__|  \______/     |__|  |__| /__/     \__\ |__| \__| /__/     \__\ \______| |_______|| _| `._____||
 ===============================================================================================================================
 )";
-
         cout << "|  1  | Tampilkan Laporan Keuangan                                                                                            |\n";
         cout << "|  2  | Lihat Proposal                                                                                                        |\n";
         cout << "|  3  | Kembali Ke Menu Utama                                                                                                 |\n";
