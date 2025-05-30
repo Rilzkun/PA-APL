@@ -30,7 +30,6 @@ struct Akun {
 };
 
 struct Transaksi {
-
     string deskripsi;
     string jenis;
     int id;
@@ -195,26 +194,58 @@ bool loadTransaksiDariCSV(const string& filename) {
     return true;
 }
 
-bool simpanProposal(const Transaksi& proposal) {
+bool simpanProposal(Transaksi& proposal) {
     bool fileBaru = false;
+
     ifstream cek("proposal.csv");
     if (!cek.good()) fileBaru = true;
     cek.close();
+
+    ifstream in("proposal.csv");
+    string line;
+    int lastID = 0;
+    if (in.is_open()) {
+        getline(in, line); // skip header
+        while (getline(in, line)) {
+            stringstream ss(line);
+            string idStr;
+            getline(ss, idStr, ',');
+            if (!idStr.empty()) lastID = stoi(idStr);
+        }
+        in.close();
+    }
+
+    proposal.id = lastID + 1;
 
     ofstream file("proposal.csv", ios::app);
     if (!file.is_open()) return false;
 
     if (fileBaru) {
-        file << "id,deskripsi,jenis,jumlah\n";  // Tulis header jika file baru
+        file << "id,deskripsi,jenis,jumlah\n";
     }
 
-    file << proposal.id << ","
-         << proposal.deskripsi << ","
-         << proposal.jenis << ","
-         << proposal.jumlah << "\n";
-
+    file << proposal.id << "," << proposal.deskripsi << "," << proposal.jenis << "," << proposal.jumlah << "\n";
     file.close();
     return true;
+}
+
+
+int getLastTransactionID(const string& filename) {
+    ifstream file(filename);
+    string line;
+    int lastID = 0;
+
+    if (!file.is_open()) return 0;
+
+    getline(file, line); // Lewati header jika ada
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string idStr;
+        getline(ss, idStr, ',');
+        lastID = stoi(idStr); // Simpan ID terakhir
+    }
+
+    return lastID;
 }
 
 void setujuiProposal() {
@@ -225,16 +256,14 @@ void setujuiProposal() {
     }
 
     string line;
-    vector<Transaksi> disetujui;
+    vector<string> rawLines;
+    vector<Transaksi> semuaProposal;
 
-    if (!getline(file, line)) {  // file kosong (tidak ada header)
-        cout << "Tidak ada proposal untuk ditinjau.\n";
-        return;
-    }
+    getline(file, line);
+    string header = line;
 
-    bool adaProposal = false;
     while (getline(file, line)) {
-        adaProposal = true;
+        rawLines.push_back(line);
         stringstream ss(line);
         string idStr, deskripsi, jenis, jumlahStr;
 
@@ -243,27 +272,67 @@ void setujuiProposal() {
         getline(ss, jenis, ',');
         getline(ss, jumlahStr, ',');
 
-        cout << "Proposal: " << deskripsi << " - Jumlah: " << jumlahStr << endl;
-        cout << "Setujui? (y/n): ";
-        char jawab;
-        cin >> jawab;
+        Transaksi t = {deskripsi, jenis, stoi(idStr), stoi(jumlahStr)};
+        semuaProposal.push_back(t);
+    }
+    file.close();
 
-        if (jawab == 'y' || jawab == 'Y') {
-            Transaksi t = {deskripsi, jenis, totaltransaksi + 1, stoi(jumlahStr)};
-            daftartransaksi[totaltransaksi++] = t;
-            disetujui.push_back(t);
+    if (semuaProposal.empty()) {
+        cout << "Tidak ada proposal untuk ditinjau.\n";
+        return;
+    }
+
+    // Tampilkan daftar proposal
+    cout << "\nDaftar Proposal:\n";
+    for (size_t i = 0; i < semuaProposal.size(); ++i) {
+        cout << i + 1 << ". " << semuaProposal[i].deskripsi
+             << " | Jenis: " << semuaProposal[i].jenis
+             << " | Jumlah: " << semuaProposal[i].jumlah << endl;
+    }
+
+    // Pilih salah satu
+    cout << "\nPilih nomor proposal yang ingin disetujui (0 untuk batal): ";
+    int pilihan;
+    cin >> pilihan;
+
+    if (pilihan < 1 || pilihan > (int)semuaProposal.size()) {
+        cout << "Tidak ada proposal yang disetujui.\n";
+        return;
+    }
+
+    // Ambil proposal yang disetujui
+    Transaksi disetujui = semuaProposal[pilihan - 1];
+
+    // Tambahkan ke transaksi.csv
+    ofstream outTransaksi("transaksi.csv", ios::app);
+    if (!outTransaksi.is_open()) {
+        cout << "Gagal membuka transaksi.csv.\n";
+        return;
+    }
+
+    int lastID = getLastTransactionID("transaksi.csv");
+    int newID = lastID + 1;
+    outTransaksi << newID << "," << disetujui.deskripsi << "," << disetujui.jenis << "," << disetujui.jumlah << "\n";
+    outTransaksi.close();
+
+    // Tulis ulang proposal.csv tanpa proposal yang disetujui
+    ofstream outProposal("proposal.csv");
+    if (!outProposal.is_open()) {
+        cout << "Gagal menulis ulang proposal.csv periksa kembali file\n";
+        return;
+    }
+
+    outProposal << header << "\n";
+    for (size_t i = 0; i < rawLines.size(); ++i) {
+        if ((int)i != pilihan - 1) {
+            outProposal << rawLines[i] << "\n";
         }
     }
+    outProposal.close();
 
-    if (!adaProposal) {
-        cout << "Tidak ada proposal untuk ditinjau.\n";
-    }
-
-    file.close();
-    simpanTransaksiKeCSV("transaksi.csv");
-    ofstream clearFile("proposal.csv", ios::trunc);
-    clearFile.close();
+    cout << "Proposal \"" << disetujui.deskripsi << "\" telah disetujui dan dipindahkan ke transaksi.csv.\n";
 }
+
 
 // === ADMIN FUNCTIONS === //
 
@@ -535,18 +604,32 @@ void catatpemasukan() {
 void ajukanProposal() {
     Transaksi proposal;
     proposal.jenis = "pengeluaran";
-    proposal.id = totalProposal + 1;  
-    
+
     cout << "Deskripsi: ";
     cin.ignore();
     getline(cin, proposal.deskripsi);
-    
-    cout << "Jumlah: ";
-    cin >> proposal.jumlah;
 
-    daftarProposal[totalProposal++] = proposal;
+    // Validasi deskripsi
+    while (proposal.deskripsi.empty()) {
+        cout << "Deskripsi tidak boleh kosong. Masukkan lagi: ";
+        getline(cin, proposal.deskripsi);
+    }
+
+    // Validasi jumlah
+    while (true) {
+        cout << "Jumlah: ";
+        cin >> proposal.jumlah;
+        if (!cin.fail() && proposal.jumlah > 0) break;
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Jumlah harus lebih dari 0.\n";
+    }
+
+    // Simpan ke file menggunakan fungsi simpanProposal()
     if (simpanProposal(proposal)) {
-        cout << "Proposal berhasil diajukan dengan ID: " << proposal.id << ".\n";
+        cout << "Proposal berhasil diajukan.\n";
+    } else {
+        cout << "Gagal menyimpan proposal.\n";
     }
 }
 
