@@ -414,7 +414,7 @@ void menuAdmin() {
         }
     } while (pilihan != 4);
 }
-// Fungsi untuk mengurutkan transaksi berdasarkan jumlah (ascending)
+
 void urutkanJumlahAscending() {
     for (int i = 0; i < totaltransaksi - 1; i++) {
         for (int j = 0; j < totaltransaksi - i - 1; j++) {
@@ -427,7 +427,6 @@ void urutkanJumlahAscending() {
     }
 }
 
-// Fungsi untuk mengurutkan transaksi berdasarkan jumlah (descending)
 void urutkanJumlahDescending() {
     for (int i = 0; i < totaltransaksi - 1; i++) {
         for (int j = 0; j < totaltransaksi - i - 1; j++) {
@@ -440,7 +439,6 @@ void urutkanJumlahDescending() {
     }
 }
 
-// Fungsi untuk mengurutkan transaksi berdasarkan ID (ascending)
 void urutkanIDAscending() {
     for (int i = 0; i < totaltransaksi - 1; i++) {
         for (int j = 0; j < totaltransaksi - i - 1; j++) {
@@ -453,7 +451,6 @@ void urutkanIDAscending() {
     }
 }
 
-// Fungsi untuk mengurutkan transaksi berdasarkan ID (descending)
 void urutkanIDDescending() {
     for (int i = 0; i < totaltransaksi - 1; i++) {
         for (int j = 0; j < totaltransaksi - i - 1; j++) {
