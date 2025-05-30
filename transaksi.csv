@@ -2,8 +2,5 @@ id,deskripsi,jenis,jumlah
 1,penjualan produk,pemasukan,1000000
 2,penjualan produk,pemasukan,2000000
 3,penjualan produk,pemasukan,1000000
-<<<<<<< HEAD
-4,2,pemasukan,0
-=======
-4,ksf,pengeluaran,12412
->>>>>>> 370e39f888a3753be4f893501b0853ddb4f4d513
+4,penjualan produk,pemasukan,3000000
+5,kebutuhan kantor,pengeluaran,3000000
